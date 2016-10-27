@@ -15,7 +15,7 @@ class RoleHandler
     {
         $ret = new CommonRet();
 
-        $id = (new \Role())->add($role->type, $role->name, $role->description ?: '', $role->rule_id ?: 0, $role->data ?: '');
+        $id = (new \Role())->add($role->name, $role->description ?: '', $role->rule_id ?: 0, $role->data ?: '');
         if ($id) {
             $ret->ret = \Constant::RET_OK;
             $ret->data = json_encode(['id' => $id]);
@@ -94,7 +94,7 @@ class RoleHandler
             $ret->total = count($roles);
         } else {
             // 有搜索条件 @_@
-            $sql = 'SELECT id,type,name,description,rule_id,data FROM role';
+            $sql = 'SELECT id,name,description,rule_id,data FROM role';
             $total_sql = 'SELECT COUNT(1) FROM role';
             if ($search->conditions) {
                 $where = [];
@@ -122,7 +122,6 @@ class RoleHandler
                 $data[] = new Role(
                     [
                         'id' => $role['id'],
-                        'type' => $role['type'],
                         'name' => $role['name'],
                         'description' => $role['description'],
                         'rule_id' => $role['rule_id'],

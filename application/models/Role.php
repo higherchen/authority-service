@@ -2,9 +2,9 @@
 
 class Role extends Model
 {
-    const GET_ALL_SQL = 'SELECT id,type,name,description,rule_id,data FROM role ORDER BY id DESC';
+    const GET_ALL_SQL = 'SELECT id,name,description,rule_id,data FROM role ORDER BY id DESC';
     const GET_BY_ID_SQL = 'SELECT * FROM role WHERE id=?';
-    const INSERT_SQL = 'INSERT INTO role (type,name,description,rule_id,data) VALUES (?,?,?,?,?)';
+    const INSERT_SQL = 'INSERT INTO role (name,description,rule_id,data) VALUES (?,?,?,?,?)';
     const UPDATE_SQL = 'UPDATE role SET name=?,description=?,data=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM role WHERE id=?';
 
@@ -23,10 +23,10 @@ class Role extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function add($type, $name, $description = '', $rule_id = 0, $data = '')
+    public function add($name, $description = '', $rule_id = 0, $data = '')
     {
         $stmt = $this->getStatement(self::INSERT_SQL);
-        $stmt->execute([$type, $name, $description, $rule_id, $data]);
+        $stmt->execute([$name, $description, $rule_id, $data]);
         $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
