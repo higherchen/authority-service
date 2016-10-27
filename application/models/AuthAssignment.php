@@ -1,7 +1,5 @@
 <?php
 
-use Swoole\Core\Logger;
-
 class AuthAssignment extends Model
 {
     const GET_BY_ITEM_ID_SQL = 'SELECT user_id FROM auth_assignment WHERE item_id=?';
@@ -36,10 +34,6 @@ class AuthAssignment extends Model
             $stmt = $this->getStatement(self::INSERT_SQL);
             foreach ($item_ids as $item_id) {
                 $stmt->execute([$user_id, $item_id]);
-                $error = $stmt->errorInfo();
-                if ($error[0] != '00000') {
-                    Logger::write(date('Y-m-d H:i:s')." AuthAssignment::updateMulti error({$error[0]}): {$error[2]}".PHP_EOL);
-                }
             }
         }
 

@@ -1,7 +1,5 @@
 <?php
 
-use Swoole\Core\Logger;
-
 class AuthItemChild extends Model
 {
     const GET_ALL_SQL = 'SELECT parent,child FROM auth_item_child';
@@ -55,18 +53,10 @@ class AuthItemChild extends Model
         if (is_array($child)) {
             foreach ($child as $item) {
                 $stmt->execute([$parent, $item]);
-                $error = $stmt->errorInfo();
-                if ($error[0] != '00000') {
-                    Logger::write(date('Y-m-d H:i:s')." AuthItemChild::add error({$error[0]}): {$error[2]}".PHP_EOL);
-                }
                 $count += $stmt->rowCount();
             }
         } else {
             $stmt->execute([$parent, $child]);
-            $error = $stmt->errorInfo();
-            if ($error[0] != '00000') {
-                Logger::write(date('Y-m-d H:i:s')." AuthItemChild::add error({$error[0]}): {$error[2]}".PHP_EOL);
-            }
             $count = $stmt->rowCount();
         }
 

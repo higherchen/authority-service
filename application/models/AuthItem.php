@@ -1,7 +1,5 @@
 <?php
 
-use Swoole\Core\Logger;
-
 class AuthItem extends Model
 {
     const GET_ALL_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item';
@@ -59,10 +57,6 @@ class AuthItem extends Model
         $stmt = $this->getStatement(self::INSERT_SQL);
         $stmt->execute([$name, $type, $rule_id, $description, $data]);
         $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            Logger::write(date('Y-m-d H:i:s')." AuthItem::add error({$error[0]}): {$error[2]}".PHP_EOL);
-        }
 
         return $count ? $this->lastInsertId() : $count;
     }
@@ -71,10 +65,6 @@ class AuthItem extends Model
     {
         $stmt = $this->getStatement(self::UPDATE_SQL);
         $stmt->execute([$name, $description, $data, $type, $item_id]);
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            Logger::write(date('Y-m-d H:i:s')." AuthItem::update error({$error[0]}): {$error[2]}".PHP_EOL);
-        }
 
         return $stmt->rowCount();
     }

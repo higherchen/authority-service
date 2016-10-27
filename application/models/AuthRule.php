@@ -29,10 +29,6 @@ class AuthRule extends Model
         $stmt = $this->getStatement(self::INSERT_SQL);
         $stmt->execute([$name, $data]);
         $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            Logger::write(date('Y-m-d H:i:s')." AuthRule::add error({$error[0]}): {$error[2]}".PHP_EOL);
-        }
 
         return $count ? $this->lastInsertId() : $count;
     }
@@ -41,10 +37,6 @@ class AuthRule extends Model
     {
         $stmt = $this->getStatement(self::UPDATE_SQL);
         $stmt->execute([$name, $data, $id]);
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            Logger::write(date('Y-m-d H:i:s')." AuthRule::update error({$error[0]}): {$error[2]}".PHP_EOL);
-        }
 
         return $stmt->rowCount();
     }

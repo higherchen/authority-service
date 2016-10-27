@@ -7,7 +7,7 @@ CREATE TABLE `user` (
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_username` (`username`)
+  UNIQUE KEY `uk_user` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '用户表';
 
 CREATE TABLE `auth_rule` (
@@ -17,7 +17,7 @@ CREATE TABLE `auth_rule` (
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_name` (`name`)
+  UNIQUE KEY `uk_auth_rule` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='存储规则的表';
 
 INSERT INTO auth_rule(id,name,data) VALUES (1,'authority', '');
@@ -76,7 +76,7 @@ CREATE TABLE `role` (
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_name` (`rule_id`,`name`)
+  UNIQUE KEY `uk_role` (`rule_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资源角色';
 
 INSERT INTO role(id,name,description,rule_id) VALUES (1,'Admin','资源管理组',1);
