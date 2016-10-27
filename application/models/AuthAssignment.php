@@ -1,6 +1,6 @@
 <?php
 
-class AuthAssignment extends Model
+class AuthAssignmentModel extends BaseModel
 {
     const GET_BY_ITEM_ID_SQL = 'SELECT user_id FROM auth_assignment WHERE item_id=?';
     const GET_BY_USER_ID_SQL = 'SELECT item_id FROM auth_assignment WHERE user_id=?';

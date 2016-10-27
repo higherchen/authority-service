@@ -1,6 +1,6 @@
 <?php
 
-class Model
+class BaseModel
 {
     protected $_database = 'default';
 
@@ -19,7 +19,7 @@ class Model
 
     protected function connect()
     {
-        $db = include ROOT.'/config/database.php';
+        $db = include APP_PATH.'/conf/database.php';
         $config = $db[$this->_database];
         $this->_db = new PDO(
             $config['connection_string'],

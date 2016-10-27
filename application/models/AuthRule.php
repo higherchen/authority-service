@@ -1,6 +1,6 @@
 <?php
 
-class AuthRule extends Model
+class AuthRuleModel extends BaseModel
 {
     const GET_BY_ID_SQL = 'SELECT id,name,data FROM auth_rule WHERE id=?';
     const GET_BY_NAME_SQL = 'SELECT id,name,data FROM auth_rule WHERE name=?';

@@ -1,6 +1,6 @@
 <?php
 
-class AuthItemChild extends Model
+class AuthItemChildModel extends BaseModel
 {
     const GET_ALL_SQL = 'SELECT parent,child FROM auth_item_child';
     const GET_BY_PARENT_SQL = 'SELECT child FROM auth_item_child WHERE parent=?';

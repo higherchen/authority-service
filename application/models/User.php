@@ -1,6 +1,6 @@
 <?php
 
-class User extends Model
+class UserModel extends BaseModel
 {
     const INSERT_SQL = 'INSERT INTO user (username,nickname,email,telephone) VALUES (?,?,?,?)';
     const GET_ALL_SQL = 'SELECT * FROM user ORDER BY id DESC';

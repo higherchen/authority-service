@@ -1,6 +1,6 @@
 <?php
 
-class ResourceAttr extends Model
+class ResourceAttrModel extends BaseModel
 {
     const GET_BY_ID_SQL = 'SELECT id,name,src_id,owner_id,role_id,mode,data FROM resource_attr WHERE name=? AND src_id=?';
     const INSERT_SQL = 'INSERT INTO resource_attr (name,src_id,owner_id,role_id,mode,data) VALUES (?,?,?,?,?,?)';

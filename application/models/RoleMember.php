@@ -1,6 +1,6 @@
 <?php
 
-class RoleMember extends Model
+class RoleMemberModel extends BaseModel
 {
     const INSERT_SQL = 'INSERT INTO role_member (role_id,user_id) VALUES (?,?)';
     const DELETE_SQL = 'DELETE FROM role_member WHERE role_id=? AND user_id=?';

@@ -1,6 +1,6 @@
 <?php
 
-class AuthItem extends Model
+class AuthItemModel extends BaseModel
 {
     const GET_ALL_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item';
     const GET_BY_TYPE_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item WHERE type=?';

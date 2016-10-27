@@ -24,9 +24,5 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
         if ($config = Yaf_Registry::get('config')->routes) {
             $router->addConfig($config);
         }
-        // $routes = include APP_PATH.'/application/route.php';
-        // foreach ($routes as $name => $route) {
-        //     $router->addRoute($name, $route);
-        // }
     }
 }

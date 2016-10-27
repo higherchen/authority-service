@@ -2,8 +2,9 @@
 
 class IndexController extends Yaf_Controller_Abstract
 {
-    public function indexAction()
+
+    public function authAction()
     {
-        // var_dump(Yaf_Registry::get('config')->memcached->toArray());
+        var_dump((new UserModel())->getById(1));
     }
 }

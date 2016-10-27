@@ -1,6 +1,6 @@
 <?php
 
-class Role extends Model
+class RoleModel extends BaseModel
 {
     const GET_ALL_SQL = 'SELECT id,name,description,rule_id,data FROM role ORDER BY id DESC';
     const GET_BY_ID_SQL = 'SELECT * FROM role WHERE id=?';
