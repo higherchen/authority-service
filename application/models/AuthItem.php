@@ -3,6 +3,7 @@
 class AuthItemModel extends BaseModel
 {
     const GET_ALL_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item';
+    const GET_BY_RULE_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item WHERE rule_id=?';
     const GET_BY_TYPE_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item WHERE type=?';
     const GET_BY_ID_SQL = 'SELECT id,name,type,description,rule_id,data FROM auth_item WHERE id=?';
     const GET_ID_BY_RULE_SQL = 'SELECT id FROM auth_item WHERE rule_id=?';
@@ -15,6 +16,15 @@ class AuthItemModel extends BaseModel
     public function getAll()
     {
         $items = $this->_db->query(self::GET_ALL_SQL)->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_column($items, null, 'id');
+    }
+
+    public function getByRule($rule_id)
+    {
+        $stmt = $this->getStatement(self::GET_BY_RULE_SQL);
+        $stmt->execute([$type]);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return array_column($items, null, 'id');
     }
