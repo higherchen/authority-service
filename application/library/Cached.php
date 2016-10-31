@@ -4,7 +4,7 @@ class Cached
 {
     protected static $_instance;
 
-    public function getMemcached()
+    public static function getMemcached()
     {
         if (static::$_instance === null) {
             $config = Yaf_Registry::get('config')->memcached->toArray();

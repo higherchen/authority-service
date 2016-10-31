@@ -7,7 +7,7 @@ class Authority_User
 
     public function __construct($uid)
     {
-        $this->user = (new UserModel())->getById($id);
+        $this->user = (new UserModel())->getById($uid);
     }
 
     public function getAssignments()
@@ -47,7 +47,7 @@ class Authority_User
                 $groups[] = ['id' => $item['id'], 'type' => $item['type'], 'name' => $item['name'], 'description' => $item['description']];
             }
 
-            if ($this->isAdmin()) {
+            if ($this->isAdmin($rule)) {
                 foreach ($items as $item) {
                     if ($item['type'] == Constant::POINT) {
                         $super_points[] = $item['data'];
@@ -79,7 +79,7 @@ class Authority_User
         $groups = [];
         $items = $rule->getItems();
 
-        if ($this->isAdmin() || $force_admin) {
+        if ($this->isAdmin($rule) || $force_admin) {
             foreach ($items as $item) {
                 if ($item['type'] == Constant::ORG || $item['type'] == Constant::GROUP) {
                     $groups[] = [

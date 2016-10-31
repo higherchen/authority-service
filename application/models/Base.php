@@ -14,7 +14,6 @@ class BaseModel
     {
         $this->_database = $database;
         $this->connect();
-        $this->ping();
     }
 
     protected function connect()
@@ -46,20 +45,5 @@ class BaseModel
         }
 
         return false;
-    }
-
-    protected function ping()
-    {
-        try {
-            $this->_db->getAttribute(PDO::ATTR_SERVER_INFO);
-        } catch (Exception $e) {
-            if ($e->getCode() == 'HY000') {
-                $this->_db = null;
-                $this->_prepared = [];
-                $this->connect();
-            } else {
-                throw $e;
-            }
-        }
     }
 }

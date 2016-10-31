@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 自系统登陆用户权限
+ *
+ * @access public
+ *
+ */
+
 class UserLogged
 {
     const AUTH_RULE = 1;
@@ -40,5 +47,15 @@ class UserLogged
         }
 
         return $user_auth;
+    }
+
+    public static function flushCache()
+    {
+        $cached = Cached::getMemcached();
+        $keys = [];
+        foreach ($cached->get('user_ids') as $user_id) {
+            $keys[] = "user:auth:{$user_id}";
+        }
+        $cached->deleteMulti($keys);
     }
 }

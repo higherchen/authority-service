@@ -2,16 +2,12 @@
 
 class Common
 {
-    public static function verifySession($username, $session_id)
-    {
-        $dashboard = new DashboardAPI();
-        return $dashboard->verifySession($username, $session_id);
-    }
 
-    public static function jsonReturn($data)
+    public static function jsonReturn($data, $exit = false)
     {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data);
+        $exit && exit();
 
         return true;
     }

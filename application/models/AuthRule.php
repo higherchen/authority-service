@@ -2,11 +2,19 @@
 
 class AuthRuleModel extends BaseModel
 {
+    const GET_ALL_SQL = 'SELECT id,name,data FROM auth_rule';
     const GET_BY_ID_SQL = 'SELECT id,name,data FROM auth_rule WHERE id=?';
     const GET_BY_NAME_SQL = 'SELECT id,name,data FROM auth_rule WHERE name=?';
     const INSERT_SQL = 'INSERT INTO auth_rule (name,data) VALUES (?,?)';
     const UPDATE_SQL = 'UPDATE auth_rule SET name=?,data=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM auth_rule WHERE id=?';
+
+    public function getAll()
+    {
+        $items = $this->_db->query(self::GET_ALL_SQL)->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_column($items, null, 'id');
+    }
 
     public function getById($id)
     {
