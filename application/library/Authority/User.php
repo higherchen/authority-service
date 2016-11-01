@@ -4,11 +4,24 @@ class Authority_User
 {
     protected $user;
     protected static $assignments;
+    protected static $roles;
 
     public function __construct($uid)
     {
         $this->user = (new UserModel())->getById($uid);
     }
+
+    // 获取用户信息
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * auth item 用户功能权限相关
+     *
+     * @access public
+     */
 
     public function getAssignments()
     {
@@ -25,12 +38,6 @@ class Authority_User
         $assignments = $this->getAssignments();
         $admin = $rule->getAdmin();
         return in_array($admin, $assignments, true);
-    }
-
-    // 获取用户信息
-    public function getUser()
-    {
-        return $this->user;
     }
 
     // 获取用户权限相关信息
@@ -110,5 +117,28 @@ class Authority_User
         }
 
         return $groups;
+    }
+
+    /**
+     * resource role 用户资源权限相关
+     *
+     * @access public
+     */
+
+    public function getRoles()
+    {
+        if (static::$roles === null) {
+            static::$roles = (new RoleMemberModel())->getRoleIdsByUserId($this->user['id']);
+        }
+
+        return static::$roles;
+    }
+
+    public function isRoleAdmin()
+    {
+    }
+
+    public function getAccessedRules()
+    {
     }
 }

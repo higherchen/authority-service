@@ -15,7 +15,7 @@ class ResourceAttrModel extends BaseModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function add($name, $src_id, $owner_id, $role_id, $mode, $data = '')
+    public function add($name, $src_id, $owner_id, $role_id, $mode = '', $data = '')
     {
         $stmt = $this->getStatement(self::INSERT_SQL);
         $stmt->execute([$name, $src_id, $owner_id, $role_id, $mode, $data]);

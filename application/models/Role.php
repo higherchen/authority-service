@@ -3,7 +3,7 @@
 class RoleModel extends BaseModel
 {
     const GET_ALL_SQL = 'SELECT id,name,description,rule_id,data FROM role ORDER BY id DESC';
-    const GET_BY_ID_SQL = 'SELECT * FROM role WHERE id=?';
+    const GET_BY_ID_SQL = 'SELECT id,name,description,rule_id,data FROM role WHERE id=?';
     const INSERT_SQL = 'INSERT INTO role (name,description,rule_id,data) VALUES (?,?,?,?,?)';
     const UPDATE_SQL = 'UPDATE role SET name=?,description=?,data=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM role WHERE id=?';

@@ -17,8 +17,12 @@ class Constant
     const RET_INVALID_NICKNAME = 50005;     // 无效昵称
     const RET_INVALID_EMAIL = 50006;        // 无效邮箱
     const RET_INVALID_TELEPHONE = 50007;    // 无效手机号
-
-    const RET_INVALID_RULE_NAME = 50101;    // 无效Rule name
+    const RET_INVALID_RULE_NAME = 50008;    // 无效Rule name
+    const RET_INVALID_CATE_NAME = 50009;    // 无效分类名
+    const RET_INVALID_GROUP_NAME = 50010;   // 无效组名
+    const RET_INVALID_POINT_NAME = 50011;   // 无效权限名
+    const RET_INVALID_POINT_DATA = 50012;   // 无效权限代码标识
+    const RET_INVALID_ROLE_NAME = 50013;    // 无效角色名
 
     // auth constant
     const POINT = 1;                        // 权限点

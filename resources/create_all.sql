@@ -35,7 +35,7 @@ CREATE TABLE `auth_item` (
   UNIQUE KEY `uk_auth_item` (`rule_id`,`name`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='储存权限和角色的表';
 
-INSERT INTO auth_item (id,name,type,description,rule_id) VALUES (1,'Admin',4,'一方通行',1);
+INSERT INTO auth_item (id,name,type,description,rule_id) VALUES (1,'Admin',5,'一方通行',1);
 
 CREATE TABLE `auth_item_child` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
@@ -78,8 +78,6 @@ CREATE TABLE `role` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_role` (`rule_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资源角色';
-
-INSERT INTO role(id,name,description,rule_id) VALUES (1,'Admin','资源管理组',1);
 
 CREATE TABLE `role_member` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',

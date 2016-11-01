@@ -2,6 +2,7 @@
 
 /**
  * RuleController 自系统Admin角色可访问
+ * 模块：1-基本信息管理 2-管理组用户设置
  * 
  * @access public
  */
@@ -16,34 +17,31 @@ class RuleController extends Yaf_Controller_Abstract
         }
     }
 
-    public function get()
+    public function getAction()
     {
-        $rules = (new AuthRuleModel())->getAll();
-        return Common::jsonReturn(['code' => Constant::RET_OK, 'data' => $rules]);
+        return Common::jsonReturn(['code' => Constant::RET_OK, 'data' => (new AuthRuleModel())->getAll()]);
     }
 
-    public function add()
+    public function addAction()
     {
         $request = $this->getRequest();
         $name = $request->getPost('name');
 
-        // Check method
+        // Data Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check rule name
-        if (!$name || !preg_match("/^[A-Za-z]([A-Za-z0-9]|-|_){1,15}$/", $name)) {
+        if (!$name || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_RULE_NAME]);
         }
 
-        $id = (new AuthRuleModel())->add($name, $request->getPost('data'));
-        $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
+        $data = Authority_Rule::add($name);
+        $ret = $data ? ['code' => Constant::RET_OK, 'data' => $data] : ['code' => Constant::RET_DATA_CONFLICT];
 
         return Common::jsonReturn($ret);
     }
 
-    public function update()
+    public function updateAction()
     {
         $request = $this->getRequest();
         $id = $request->getParam('id');
@@ -55,7 +53,7 @@ class RuleController extends Yaf_Controller_Abstract
         }
 
         // Check rule name
-        if (!$name || preg_match("/^[A-Za-z]([A-Za-z0-9]|-|_){1,15}$/", $name)) {
+        if (!$name || preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_RULE_NAME_INVALID]);
         }
 
@@ -65,7 +63,7 @@ class RuleController extends Yaf_Controller_Abstract
         return Common::jsonReturn($ret);
     }
 
-    public function remove()
+    public function removeAction()
     {
         $request = $this->getRequest();
         $id = $request->getParam('id');
