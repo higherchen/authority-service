@@ -31,11 +31,17 @@ class RoleMemberModel extends BaseModel
         return $stmt->rowCount();
     }
 
-    public function removeByRole($role_id)
+    public function removeByRole($role_ids)
     {
-        $stmt = $this->getStatement(self::DELETE_BY_ROLE_SQL);
-        $stmt->execute([$role_id]);
+        if (is_array($role_ids)) {
+            $role_ids = implode(',', $role_ids);
 
-        return $stmt->rowCount();
+            return $this->_db->exec("DELETE FROM role_member WHERE role_id IN ({$role_ids})");
+        } else {
+            $stmt = $this->getStatement(self::DELETE_BY_ROLE_SQL);
+            $stmt->execute([$role_ids]);
+
+            return $stmt->rowCount();
+        }
     }
 }

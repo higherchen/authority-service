@@ -2,18 +2,11 @@
 
 class RoleModel extends BaseModel
 {
-    const GET_ALL_SQL = 'SELECT id,name,description,rule_id,data FROM role ORDER BY id DESC';
     const GET_BY_ID_SQL = 'SELECT id,name,description,rule_id,data FROM role WHERE id=?';
+    const GET_ID_BY_RULE_SQL = 'SELECT id,name,description,rule_id,data FROM role WHERE rule_id=? ORDER BY id DESC';
     const INSERT_SQL = 'INSERT INTO role (name,description,rule_id,data) VALUES (?,?,?,?,?)';
     const UPDATE_SQL = 'UPDATE role SET name=?,description=?,data=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM role WHERE id=?';
-
-    public function getAll()
-    {
-        $roles = $this->_db->query(self::GET_ALL_SQL)->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_column($roles, null, 'id');
-    }
 
     public function getById($id)
     {
@@ -21,6 +14,14 @@ class RoleModel extends BaseModel
         $stmt->execute([$id]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getIdsByRule($rule_id)
+    {
+        $stmt = $this->getStatement(self::GET_ID_BY_RULE_SQL);
+        $stmt->execute([$rule_id]);
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function add($name, $description = '', $rule_id = 0, $data = '')
@@ -40,11 +41,17 @@ class RoleModel extends BaseModel
         return $stmt->rowCount();
     }
 
-    public function remove($id)
+    public function removeByRoleIds($ids)
     {
-        $stmt = $this->getStatement(self::DELETE_BY_ID_SQL);
-        $stmt->execute([$id]);
+        if (is_array($ids)) {
+            $ids = implode(',', $ids);
 
-        return $stmt->rowCount();
+            return $this->_db->exec("DELETE FROM role WHERE id IN ({$ids})");
+        } else {
+            $stmt = $this->getStatement(self::DELETE_BY_ID_SQL);
+            $stmt->execute([$ids]);
+
+            return $stmt->rowCount();
+        }
     }
 }

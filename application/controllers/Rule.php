@@ -2,7 +2,7 @@
 
 /**
  * RuleController 自系统Admin角色可访问
- * 模块：1-基本信息管理 2-管理组用户设置
+ * 模块：1-基本信息管理
  * 
  * @access public
  */
@@ -73,7 +73,7 @@ class RuleController extends Yaf_Controller_Abstract
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
 
-        $count = (new AuthRuleModel())->remove($id);
+        $count = Authority_Rule::remove($id);
         $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
         return Common::jsonReturn($ret);
