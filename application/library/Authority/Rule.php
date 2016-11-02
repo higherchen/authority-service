@@ -11,6 +11,7 @@ class Authority_Rule
         $this->rule = (new AuthRuleModel())->getByName($rule_name);
     }
 
+    // 获取此auth rule下的所有auth item
     public function getItems()
     {
         if (static::$items === null) {
@@ -20,6 +21,7 @@ class Authority_Rule
         return static::$items;
     }
 
+    // 获取ADMIN组ID
     public function getAdmin()
     {
         foreach ($this->getItems() as $item) {
@@ -31,6 +33,11 @@ class Authority_Rule
         return false;
     }
 
+    /**
+     * auth_rule新增 - 自动创建admin及role
+     *
+     * @static
+     */
     public static function add($name)
     {
         $id = (new AuthRuleModel())->add($name, md5(time().mt_rand(0, 1000)));
@@ -43,7 +50,7 @@ class Authority_Rule
         if ($admin_id = (new AuthItemModel())->add('Admin', Constant::ADMIN, $id)) {
             $data['admin_id'] = $admin_id;
         }
-        if ($role_id = (new RoleModel())->add($name, "{$name}操作组", $id)) {
+        if ($role_id = (new RoleModel())->add($name, "{$name}管理", $id)) {
             $data['role_id'] = $role_id;
             (new ResourceAttrModel())->add('auth_rule', $id, $_SESSION['uid'], $role_id);
         }
@@ -51,6 +58,11 @@ class Authority_Rule
         return $data;
     }
 
+    /**
+     * auth_rule删除 - 影响很大 谨慎调用
+     *
+     * @static
+     */
     public static function remove($id)
     {
         $count = (new AuthRuleModel())->remove($id);
@@ -71,5 +83,17 @@ class Authority_Rule
         }
 
         return $count;
+    }
+
+    /**
+     * 根据rule_id获取基于此auth_rule的基本role
+     *
+     * @static
+     */
+    public static function getRoleByRule($rule_id)
+    {
+        $rule = (new AuthRuleModel())->getById($rule_id);
+
+        return (new RoleModel())->getByNameAndRuleId($rule['id'], $rule['name']);
     }
 }

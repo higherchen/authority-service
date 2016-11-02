@@ -27,7 +27,7 @@ class RuleController extends Yaf_Controller_Abstract
         $request = $this->getRequest();
         $name = $request->getPost('name');
 
-        // Data Filter
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
@@ -47,12 +47,10 @@ class RuleController extends Yaf_Controller_Abstract
         $id = $request->getParam('id');
         $name = $request->getPost('name');
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check rule name
         if (!$name || preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_RULE_NAME_INVALID]);
         }
@@ -66,14 +64,48 @@ class RuleController extends Yaf_Controller_Abstract
     public function removeAction()
     {
         $request = $this->getRequest();
-        $id = $request->getParam('id');
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'DELETE') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
 
+        $id = $request->getParam('id');
         $count = Authority_Rule::remove($id);
+        $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
+
+        return Common::jsonReturn($ret);
+    }
+
+    public function userAction()
+    {
+        // 给auth rule添加数据源角色用户
+        $request = $this->getRequest();
+
+        // Filter
+        if ($request->getMethod() !== 'POST') {
+            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
+        }
+
+        $role = Authority_Rule::getRoleByRule($request->getParam('id'));
+        $count = (new RoleMemberModel())->add($role['id'], $request->getPost('user_id'));
+        $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_CONFLICT];
+
+        return Common::jsonReturn($ret);
+    }
+
+    public function removeUserAction()
+    {
+        // 删除auth rule数据源角色用户
+        $request = $this->getRequest();
+
+        // Filter
+        if ($request->getMethod() != 'DELETE') {
+            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
+        }
+
+        $role = Authority_Rule::getRoleByRule($request->getParam('id'));
+        $count = (new RoleMemberModel())->remove($role['id'], $request->getPost('user_id'));
         $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
         return Common::jsonReturn($ret);

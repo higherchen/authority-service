@@ -119,26 +119,22 @@ class Authority_User
         return $groups;
     }
 
-    /**
-     * resource role 用户资源权限相关
-     *
-     * @access public
-     */
-
-    public function getRoles()
-    {
-        if (static::$roles === null) {
-            static::$roles = (new RoleMemberModel())->getRoleIdsByUserId($this->user['id']);
-        }
-
-        return static::$roles;
-    }
-
-    public function isRoleAdmin()
-    {
-    }
-
     public function getAccessedRules()
     {
+    }
+
+    /**
+     * user删除 - 自动删除auth assignment
+     *
+     * @static
+     */
+    public static function remove($id)
+    {
+        $count = (new UserModel())->remove($id);
+        if ($count) {
+            (new AuthAssignmentModel())->removeByUserId($id);
+        }
+
+        return $count;
     }
 }

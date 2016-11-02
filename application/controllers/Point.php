@@ -3,7 +3,7 @@
 /**
 * PointController
 *
-* 权限点
+* 权限点 判断功能权限
 *
 * @package controllers
 */
@@ -24,18 +24,14 @@ class PointController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check name
         $name = $request->getPost('name');
         if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
         }
-
-        // Check data
         $data = $request->getPost('data');
         if (!$data || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $data)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_POINT_DATA]);
@@ -51,18 +47,14 @@ class PointController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check name
         $name = $request->getPost('name');
         if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
         }
-
-        // Check data
         $data = $request->getPost('data');
         if (!$data || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $data)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_POINT_DATA]);
@@ -78,7 +70,7 @@ class PointController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'DELETE') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }

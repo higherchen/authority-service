@@ -25,30 +25,23 @@ class UserController extends Yaf_Controller_Abstract
     public function addAction()
     {
         $request = $this->getRequest();
-        // Check method
+
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check username
         $username = $request->getPost('username');
         if (!$username || !preg_match("/^[A-Za-z][A-Za-z0-9]{1,15}$/", $username)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_USERNAME]);
         }
-
-        // Check nickname
         $nickname = $request->getPost('nickname');
         if (!$nickname || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $nickname)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_NICKNAME]);
         }
-
-        // Check email
         $email = $request->getPost('email');
         if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_EMAIL]);
         }
-
-        // Check telephone
         $telephone = $request->getPost('telephone');
         if ($telephone && !preg_match("/^\+?\d{3,15}$/", $telephone)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_TELEPHONE]);
@@ -64,22 +57,19 @@ class UserController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
         $id = $request->getParam('id');
         $nickname = $request->getPost('nickname');
         if (!$nickname || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $nickname)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_NICKNAME]);
         }
-
         $email = $request->getPost('email');
         if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_EMAIL]);
         }
-
         $telephone = $request->getPost('telephone');
         if ($telephone && !preg_match("/^\+?\d{3,15}$/", $telephone)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_TELEPHONE]);
@@ -96,14 +86,29 @@ class UserController extends Yaf_Controller_Abstract
         $request = $this->getRequest();
         $id = $request->getParam('id');
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'DELETE') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
 
-        $count = (new UserModel())->remove($id);
+        $count = Authority_User::remove($id);
         $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
         return Common::jsonReturn($ret);
+    }
+
+    // 给用户分配组
+    public function assignAction()
+    {
+        $request = $this->getRequest();
+
+        // Filter
+        if ($request->getMethod() !== 'POST') {
+            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
+        }
+
+        $user = Factory::getUser($_SESSION['uid']);
+        $accessed_rules = $user->getAccessedRules();
+        // $groups = $user->getAssignableGroup(Factory::getRule('authority'));
     }
 }

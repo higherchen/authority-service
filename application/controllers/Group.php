@@ -3,7 +3,7 @@
 /**
 * GroupController
 *
-* 用户组
+* 用户组 数据源权限 => 功能权限
 *
 * @package controllers
 */
@@ -24,12 +24,10 @@ class GroupController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check name
         $name = $request->getPost('name');
         if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
@@ -45,12 +43,10 @@ class GroupController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'POST') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
-
-        // Check name
         $name = $request->getPost('name');
         if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
             return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
@@ -66,7 +62,7 @@ class GroupController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
 
-        // Check method
+        // Filter
         if ($request->getMethod() !== 'DELETE') {
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
