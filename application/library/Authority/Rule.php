@@ -45,17 +45,17 @@ class Authority_Rule
      */
     public static function add($name)
     {
-        $id = (new AuthRuleModel())->add($name, md5(time().mt_rand(0, 1000)));
+        $id = (new AuthRuleModel())->add($name, substr(md5(time().mt_rand(0, 1000)), 16));
         if (!$id) {
             return false;
         }
         $data['id'] = $id;
 
         // 自动创建基于此auth_rule的admin组 自动创建基于此auth_rule的role
-        if ($admin_id = (new AuthItemModel())->add('Admin', Constant::ADMIN, $id)) {
+        if ($admin_id = (new AuthItemModel())->add('Admin', Constant::ADMIN, $id, "{$name} Admin")) {
             $data['admin_id'] = $admin_id;
         }
-        if ($role_id = (new RoleModel())->add($name, "{$name}管理", $id)) {
+        if ($role_id = (new RoleModel())->add($name, "{$name} Member", $id)) {
             $data['role_id'] = $role_id;
             (new ResourceAttrModel())->add('auth_rule', $id, $_SESSION['uid'], $role_id);
         }

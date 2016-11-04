@@ -3,6 +3,7 @@
 class RoleMemberModel extends BaseModel
 {
     const GET_ROLE_BY_USER_ID = 'SELECT role_id FROM role_member WHERE user_id=?';
+    const GET_USER_BY_ROLE_ID = 'SELECT user_id FROM role_member WHERE role_id=?';
     const INSERT_SQL = 'INSERT INTO role_member (role_id,user_id) VALUES (?,?)';
     const DELETE_SQL = 'DELETE FROM role_member WHERE role_id=? AND user_id=?';
     const DELETE_BY_ROLE_SQL = 'DELETE FROM role_member WHERE role_id=?';
@@ -11,6 +12,14 @@ class RoleMemberModel extends BaseModel
     {
         $stmt = $this->getStatement(self::GET_ROLE_BY_USER_ID);
         $stmt->execute([$user_id]);
+
+        return $stmt->fetch(PDO::FETCH_COLUMN);
+    }
+
+    public function getUserIdsByRoleId($role_id)
+    {
+        $stmt = $this->getStatement(self::GET_USER_BY_ROLE_ID);
+        $stmt->execute([$role_id]);
 
         return $stmt->fetch(PDO::FETCH_COLUMN);
     }
