@@ -9,12 +9,18 @@ class RoleModel extends BaseModel
     const UPDATE_SQL = 'UPDATE role SET name=?,description=?,data=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM role WHERE id=?';
 
-    public function getById($id)
+    public function getById($ids)
     {
-        $stmt = $this->getStatement(self::GET_BY_ID_SQL);
-        $stmt->execute([$id]);
+        if (is_array($ids)) {
+            $ids = implode(',', $ids);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $this->_db->query("SELECT id,name,description,rule_id,data FROM role WHERE id IN ({$ids})")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $stmt = $this->getStatement(self::GET_BY_ID_SQL);
+            $stmt->execute([$ids]);
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
     }
 
     public function getByNameAndRuleId($rule_id, $name)

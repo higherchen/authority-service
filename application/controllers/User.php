@@ -98,17 +98,28 @@ class UserController extends Yaf_Controller_Abstract
     }
 
     // 给用户分配组
-    public function assignAction()
+    public function groupsAction()
     {
         $request = $this->getRequest();
 
-        // Filter
-        if ($request->getMethod() !== 'POST') {
-            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
+        // 检测用户是否可访问此auth rule
+        $accessed_rule_ids = $user->getAccessedRules();
+        $rule_id = $request->getParam('rule_id');
+        if (!in_array($rule_id, $accessed_rule_ids)) {
+            return Common::jsonReturn(['code' => Constant::RET_USER_NO_ACCESS]);
         }
 
+        // 获取用户可以分配给他人的组
         $user = Factory::getUser($_SESSION['uid']);
-        $accessed_rules = $user->getAccessedRules();
-        // $groups = $user->getAssignableGroup(Factory::getRule('authority'));
+        $rule = (new RuleModel())->getById($rule_id);
+        $assignable_group_ids = $user->getAssignableGroup(Factory::getRule($rule));
+
+        if ($request->getMethod() == 'GET') {
+        } elseif ($request->getMethod() == 'POST') {
+            $group_ids = $request->getPost('groups');
+            $user->assignGroups($rule_id, $group_ids, $request->getPost('uid'));
+
+            return Common::jsonReturn(['code' => RET_OK]);
+        }
     }
 }

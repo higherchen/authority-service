@@ -29,12 +29,18 @@ class AuthItemModel extends BaseModel
         return array_column($items, null, 'id');
     }
 
-    public function getById($id)
+    public function getById($ids)
     {
-        $stmt = $this->getStatement(self::GET_BY_ID_SQL);
-        $stmt->execute([$id]);
+        if (is_array($ids)) {
+            $ids = implode(',', $ids);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $this->_db->query("SELECT id,name,type,description,rule_id,data FROM auth_item WHERE id IN ({$ids})")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $stmt = $this->getStatement(self::GET_BY_ID_SQL);
+            $stmt->execute([$ids]);
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
     }
 
     public function getIdsByRule($rule_id)

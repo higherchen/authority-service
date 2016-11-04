@@ -6,9 +6,14 @@ class Authority_Rule
     protected static $items;
     protected static $groups;
 
-    public function __construct($rule_name)
+    public function __construct($rule)
     {
-        $this->rule = (new AuthRuleModel())->getByName($rule_name);
+        if (is_array($rule)) {
+            $this->rule = $rule;
+        } else {
+            $model = new AuthRuleModel();
+            $this->rule = is_string($rule) ? $model->getByName($rule) : $model->getById($rule);
+        }
     }
 
     // 获取此auth rule下的所有auth item

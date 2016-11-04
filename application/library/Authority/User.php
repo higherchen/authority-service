@@ -4,11 +4,16 @@ class Authority_User
 {
     protected $user;
     protected static $assignments;
-    protected static $roles;
+    protected static $rules;
 
-    public function __construct($uid)
+    public function __construct($user)
     {
-        $this->user = (new UserModel())->getById($uid);
+        if (is_array($user)) {
+            $this->user = $user;
+        } else {
+            $model = new UserModel();
+            $this->user = is_string($user) ? $model->getByName($user) : $model->getById($user);
+        }
     }
 
     // 获取用户信息
@@ -121,6 +126,41 @@ class Authority_User
 
     public function getAccessedRules()
     {
+        if (static::$rules === null) {
+            $role_ids = (new RoleMemberModel())->getRoleIdsByUserId($this->user['id']);
+            $roles = (new RoleModel())->getById($role_ids);
+            static::$rules = array_unique(array_column($roles, 'rule_id'));
+        }
+
+        return static::$rules;
+    }
+
+    /**
+     * 给user分配基于auth rule的组
+     *
+     * @static
+     */
+    public static function assignGroups($rule_id, $groups_ids, $user_id)
+    {
+        // 构建要删除及添加的用户组
+        $origin = static::getGroups($rule_id, $user_id);
+        $deleted = $origin ? array_diff($origin, $group_ids) : [];
+        $added = array_diff($group_ids, $origin);
+
+        return (new AuthAssignmentModel())->updateMulti($user_id, $added, $deleted);
+    }
+
+    /**
+     * 获取user基于auth rule的用户组
+     *
+     * @static
+     */
+    public static function getGroups($rule_id, $user_id)
+    {
+        $assignments = (new AuthAssignmentModel())->getItemIdsByUserId($user_id);
+        $item_ids = (new AuthItemModel())->getIdsByRule($rule_id);
+
+        return array_intersect($assignments, $item_ids);
     }
 
     /**
