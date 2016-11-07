@@ -11,76 +11,75 @@
 class PointController extends Yaf_Controller_Abstract
 {
 
-    public function getAction()
+    public function getsAction()
     {
         $request = $this->getRequest();
-        $rule_id = $request->getParam('rule_id');
-        $ret = (new AuthItemModel())->getByRuleType($rule_id, Constant::POINT);
-        
-        return Common::jsonReturn(['code' => Constant::RET_OK, 'data' => $ret]);
-    }
+        $method = $request->getMethod();
 
-    public function addAction()
-    {
-        $request = $this->getRequest();
+        switch ($method) {
+            case 'GET':
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByRuleType($request->getParam('rule_id'), Constant::POINT)];
+                break;
 
-        // Filter
-        if ($request->getMethod() !== 'POST') {
-            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
-        }
-        $name = $request->getPost('name');
-        if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
-            return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
-        }
-        $data = $request->getPost('data');
-        if (!$data || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $data)) {
-            return Common::jsonReturn(['code' => Constant::RET_INVALID_POINT_DATA]);
-        }
+            case 'POST':
+                $name = $request->getPost('name');
+                if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
+                }
+                $data = $request->getPost('data');
+                if (!$data || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $data)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_POINT_DATA]);
+                }
 
-        $id = (new AuthItemModel())->add($name, Constant::POINT, $request->getParam('rule_id'), $request->getPost('description') ?: '', $data);
-        $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
+                $id = (new AuthItemModel())->add($name, Constant::POINT, $request->getParam('rule_id'), $request->getPost('description') ?: '', $data);
+                $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
+                break;
+
+            default:
+                $ret = ['code' => Constant::RET_METHOD_ERROR];
+                break;
+        }
 
         return Common::jsonReturn($ret);
     }
 
-    public function updateAction()
+    public function handleAction()
     {
         $request = $this->getRequest();
+        $method = $request->getMethod();
 
-        // Filter
-        if ($request->getMethod() !== 'POST') {
-            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
+        switch ($method) {
+            case 'GET':
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getById($request->getParam('item_id'))];
+                break;
+
+            case 'POST':
+                $name = $request->getPost('name');
+                if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
+                }
+                $data = $request->getPost('data');
+                if (!$data || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $data)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_POINT_DATA]);
+                }
+
+                $id = (new AuthItemModel())->update($request->getParam('item_id'), Constant::POINT, $name, $request->getPost('description') ?: '', $data);
+                $ret = $id ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_CONFLICT];
+                break;
+
+            case 'DELETE':
+                $id = $request->getParam('item_id');
+                $count = (new AuthItemModel())->remove($request->getParam('rule_id'), Constant::POINT, $id);
+                $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
+
+                // 后续处理
+                (new AuthItemChildModel())->remove('', $id);
+                break;
+
+            default:
+                $ret = ['code' => Constant::RET_METHOD_ERROR];
+                break;
         }
-        $name = $request->getPost('name');
-        if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
-            return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
-        }
-        $data = $request->getPost('data');
-        if (!$data || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $data)) {
-            return Common::jsonReturn(['code' => Constant::RET_INVALID_POINT_DATA]);
-        }
-
-        $id = (new AuthItemModel())->update($request->getParam('item_id'), Constant::POINT, $name, $request->getPost('description') ?: '', $data);
-        $ret = $id ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_CONFLICT];
-
-        return Common::jsonReturn($ret);
-    }
-
-    public function removeAction()
-    {
-        $request = $this->getRequest();
-
-        // Filter
-        if ($request->getMethod() !== 'DELETE') {
-            return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
-        }
-
-        $id = $request->getParam('item_id');
-        $count = (new AuthItemModel())->remove($request->getParam('rule_id'), Constant::POINT, $id);
-        $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
-
-        // 后续处理
-        (new AuthItemChildModel())->remove('', $id);
 
         return Common::jsonReturn($ret);
     }

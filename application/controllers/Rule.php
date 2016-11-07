@@ -30,7 +30,7 @@ class RuleController extends Yaf_Controller_Abstract
             case 'GET':
                 $ret = ['code' => Constant::RET_OK, 'data' => (new AuthRuleModel())->getAll()];
                 break;
-            
+
             case 'POST':
                 $name = $request->getPost('name');
                 if (!$name || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
@@ -61,7 +61,7 @@ class RuleController extends Yaf_Controller_Abstract
             case 'GET':
                 $ret = ['code' => Constant::RET_OK, 'data' => (new AuthRuleModel())->getById($rule_id)];
                 break;
-            
+
             case 'POST':
                 $name = $request->getPost('name');
                 if (!$name || preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
@@ -101,7 +101,7 @@ class RuleController extends Yaf_Controller_Abstract
                 $user_ids = (new RoleMemberModel())->getUserIdsByRoleId($role['id']);
                 $ret = ['code' => Constant::RET_OK, 'data' => (new UserModel())->getById($user_ids)];
                 break;
-            
+
             case 'POST':
                 $role = Authority_Rule::getRoleByRule($rule_id);
                 $count = (new RoleMemberModel())->add($role['id'], $request->getPost('user_id'));
