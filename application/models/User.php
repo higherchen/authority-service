@@ -2,17 +2,17 @@
 
 class UserModel extends BaseModel
 {
-    const INSERT_SQL = 'INSERT INTO user (username,nickname,email,telephone) VALUES (?,?,?,?)';
+    const INSERT_SQL = 'INSERT INTO user (username,password,nickname,email,telephone) VALUES (?,?,?,?)';
     const GET_ALL_SQL = 'SELECT id,username,nickname,email,telephone FROM user ORDER BY id DESC';
     const GET_BY_ID_SQL = 'SELECT id,username,nickname,email,telephone FROM user WHERE id=?';
-    const GET_BY_NAME_SQL = 'SELECT id,username,nickname,email,telephone FROM user WHERE username=?';
-    const UPDATE_SQL = 'UPDATE user SET nickname=?,email=?,telephone=? WHERE id=?';
+    const GET_BY_NAME_SQL = 'SELECT id,username,password,nickname,email,telephone FROM user WHERE username=?';
+    const UPDATE_SQL = 'UPDATE user SET password=?,nickname=?,email=?,telephone=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM user WHERE id=?';
 
-    public function add($username, $nickname, $email, $telephone)
+    public function add($username, $password = '', $nickname = '', $email = '', $telephone = '')
     {
         $stmt = $this->getStatement(self::INSERT_SQL);
-        $stmt->execute([$username, $nickname, $email, $telephone]);
+        $stmt->execute([$username, $password, $nickname, $email, $telephone]);
         $count = $stmt->rowCount();
 
         return $count ? $this->lastInsertId() : $count;
@@ -67,10 +67,10 @@ class UserModel extends BaseModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $nickname, $email, $telephone)
+    public function update($id, $password, $nickname, $email, $telephone)
     {
         $stmt = $this->getStatement(self::UPDATE_SQL);
-        $stmt->execute([$nickname, $email, $telephone, $id]);
+        $stmt->execute([$password, $nickname, $email, $telephone, $id]);
 
         return $stmt->rowCount();
     }
@@ -81,12 +81,5 @@ class UserModel extends BaseModel
         $stmt->execute([$id]);
 
         return $stmt->rowCount();
-    }
-
-    public function getMulti($ids)
-    {
-        $ids = implode(',', $ids);
-
-        return $this->_db->query("SELECT * FROM user WHERE id IN ({$ids})")->fetchAll(PDO::FETCH_ASSOC);
     }
 }

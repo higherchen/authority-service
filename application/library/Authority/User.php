@@ -4,7 +4,7 @@ class Authority_User
 {
     protected $user;
     protected static $assignments;
-    protected static $rules;
+    protected static $apps;
 
     public function __construct($user)
     {

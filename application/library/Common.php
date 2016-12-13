@@ -2,7 +2,6 @@
 
 class Common
 {
-
     public static function jsonReturn($data, $exit = false)
     {
         header('Content-Type: application/json; charset=utf-8');
@@ -19,7 +18,7 @@ class Common
                 header("HTTP/1.0 404 Not Found");
                 echo $error_message ?: '404 Page not found';
                 break;
-            
+
             default:
                 # code...
                 break;
