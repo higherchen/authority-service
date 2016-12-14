@@ -3,8 +3,8 @@
 class Authority_User
 {
     protected $user;
-    protected static $assignments;
-    protected static $apps;
+    protected $assignments;
+    protected $apps;
 
     public function __construct($user)
     {
@@ -30,26 +30,26 @@ class Authority_User
 
     public function getAssignments()
     {
-        if (static::$assignments === null) {
-            static::$assignments = (new AuthAssignmentModel())->getItemIdsByUserId($this->user['id']);
+        if ($this->assignments === null) {
+            $this->assignments = (new AuthAssignmentModel())->getItemIdsByUserId($this->user['id']);
         }
 
-        return static::$assignments;
+        return $this->assignments;
     }
 
     // 判断用户在指定规则下是否是admin
-    public function isAdmin(Authority_Rule $rule)
+    public function isAdmin(Authority_App $app)
     {
         $assignments = $this->getAssignments();
-        $admin = $rule->getAdmin();
+        $admin = $app->getAdmin();
         return in_array($admin, $assignments, true);
     }
 
     // 获取用户权限相关信息
-    public function getAuth(Authority_Rule $rule)
+    public function getAuth(Authority_App $app)
     {
         $groups = $super_points = $points = [];
-        $items = $rule->getItems();
+        $items = $app->getItems();
 
         // get user groups
         $group_ids = $this->getAssignments();
@@ -59,7 +59,7 @@ class Authority_User
                 $groups[] = ['id' => $item['id'], 'type' => $item['type'], 'name' => $item['name'], 'description' => $item['description']];
             }
 
-            if ($this->isAdmin($rule)) {
+            if ($this->isAdmin($app)) {
                 foreach ($items as $item) {
                     if ($item['type'] == Constant::POINT) {
                         $super_points[] = $item['data'];
@@ -86,12 +86,12 @@ class Authority_User
         return ['groups' => $groups, 'super_points' => $super_points, 'points' => $points];
     }
 
-    public function getAssignableGroup(Authority_Rule $rule, $force_admin = false)
+    public function getAssignableGroup(Authority_App $app, $force_admin = false)
     {
         $groups = [];
-        $items = $rule->getItems();
+        $items = $app->getItems();
 
-        if ($this->isAdmin($rule) || $force_admin) {
+        if ($this->isAdmin($app) || $force_admin) {
             foreach ($items as $item) {
                 if ($item['type'] == Constant::ORG || $item['type'] == Constant::GROUP) {
                     $groups[] = [
@@ -124,26 +124,25 @@ class Authority_User
         return $groups;
     }
 
-    public function getAccessedRules()
+    public function getAccessedApps()
     {
-        if (static::$rules === null) {
+        if ($this->apps === null) {
             $role_ids = (new RoleMemberModel())->getRoleIdsByUserId($this->user['id']);
-            $roles = (new RoleModel())->getById($role_ids);
-            static::$rules = array_unique(array_column($roles, 'rule_id'));
+            $this->apps = (new ResourceAttrModel())->getAccessedResources($this->user['id'], $role_ids, 'app');
         }
 
-        return static::$rules;
+        return $this->apps;
     }
 
     /**
-     * 给user分配基于auth rule的组
+     * 给user分配基于app的组
      *
      * @static
      */
-    public static function assignGroups($rule_id, $groups_ids, $user_id)
+    public static function assignGroups($app_id, $groups_ids, $user_id)
     {
         // 构建要删除及添加的用户组
-        $origin = static::getGroups($rule_id, $user_id);
+        $origin = static::getGroups($app_id, $user_id);
         $deleted = $origin ? array_diff($origin, $group_ids) : [];
         $added = array_diff($group_ids, $origin);
 
@@ -151,14 +150,14 @@ class Authority_User
     }
 
     /**
-     * 获取user基于auth rule的用户组
+     * 获取user基于app的用户组
      *
      * @static
      */
-    public static function getGroups($rule_id, $user_id)
+    public static function getGroups($app_id, $user_id)
     {
         $assignments = (new AuthAssignmentModel())->getItemIdsByUserId($user_id);
-        $item_ids = (new AuthItemModel())->getIdsByRule($rule_id);
+        $item_ids = (new AuthItemModel())->getByAppId($app_id);
 
         return array_intersect($assignments, $item_ids);
     }

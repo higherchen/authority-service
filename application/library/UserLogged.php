@@ -30,11 +30,11 @@ class UserLogged
         $user_auth = json_decode($cached->get($key), true);
         if (!$user_auth) {
             $user = Factory::getUser($uid);
-            $rule = Factory::getRule('authority');
+            $app = Factory::getApp('authority');
 
-            $user_auth = $user->getAuth($rule);
+            $user_auth = $user->getAuth($app);
             $user_auth['user'] = $user->getUser();
-            $user_auth['assignable'] = $user->getAssignableGroup($rule);
+            $user_auth['assignable'] = $user->getAssignableGroup($app);
 
             $cached->set($key, json_encode($user_auth), 0);
             $user_auth = json_decode(json_encode($user_auth), true);

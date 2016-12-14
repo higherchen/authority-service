@@ -2,17 +2,17 @@
 
 class Factory
 {
-    public static $rules = [];
+    public static $apps = [];
     public static $users = [];
 
-    public static function getRule($rule)
+    public static function getApp($app)
     {
-        $rule_name = is_array($rule) ? $rule['name'] : $rule;
-        if (!isset(static::$rules[$rule_name])) {
-            static::$rules[$rule_name] = new Authority_Rule($rule);
+        $app_key = is_array($app) ? $app['app_key'] : $app;
+        if (!isset(static::$apps[$app_key])) {
+            static::$apps[$app_key] = new Authority_Rule($app_key);
         }
 
-        return static::$rules[$rule_name];
+        return static::$apps[$app_key];
     }
 
     public static function getUser($user)

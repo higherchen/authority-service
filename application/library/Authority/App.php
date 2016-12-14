@@ -3,27 +3,27 @@
 class Authority_App
 {
     protected $app;
-    protected static $items;
-    protected static $groups;
+    protected $items;
 
+    /**
+     * 认证服务接入app构造函数
+     *
+     * @param array|string $app
+     *
+     */
     public function __construct($app)
     {
-        if (is_array($app)) {
-            $this->app = $app;
-        } else {
-            $model = new AppModel();
-            $this->app = is_string($app) ? $model->getByAppKey($app) : $model->getById($app);
-        }
+        $this->app = is_array($app) ? $app : (new AppModel())->getByAppKey($app);
     }
 
     // 获取此app下的所有auth item
     public function getItems()
     {
-        if (static::$items === null) {
-            static::$items = (new AuthItemModel())->getByAppId($this->app['id']);
+        if ($this->items === null) {
+            $this->items = (new AuthItemModel())->getByAppId($this->app['id']);
         }
 
-        return static::$items;
+        return $this->items;
     }
 
     // 获取ADMIN组ID
@@ -75,17 +75,5 @@ class Authority_App
         }
 
         return $count;
-    }
-
-    /**
-     * 根据rule_id获取基于此auth_rule的基本role
-     *
-     * @static
-     */
-    public static function getRoleByRule($rule_id)
-    {
-        $rule = (new AuthRuleModel())->getById($rule_id);
-
-        return (new RoleModel())->getByNameAndRuleId($rule['id'], $rule['name']);
     }
 }
