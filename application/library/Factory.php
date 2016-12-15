@@ -9,7 +9,7 @@ class Factory
     {
         $app_key = is_array($app) ? $app['app_key'] : $app;
         if (!isset(static::$apps[$app_key])) {
-            static::$apps[$app_key] = new Authority_Rule($app_key);
+            static::$apps[$app_key] = new Authority_App($app_key);
         }
 
         return static::$apps[$app_key];

@@ -4,34 +4,41 @@ class AuthController extends Yaf_Controller_Abstract
 {
 
     /**
-     * 系统登陆.
+     * 验证登录，返回权限
      *
      * @return json string
      */
     public function indexAction()
     {
         $request = $this->getRequest();
+        $method = $request->getMethod();
 
-        if (!isset($_SESSION['uid'])) {
-            $username = $request->getCookie('username');
-            $session_id = $request->getCookie('_AJSESSIONID') ? : '';
-            if (empty($session_id) || empty($username)) {
-                return $this->json(['code' => Constant::RET_NO_LOGIN]);
-            } else {
-                $ret = DashboardAPI::verifySession($username, $session_id);
-                if (!$ret) {
-                    session_destroy();
-                    return Common::jsonReturn(['code' => Constant::RET_NO_LOGIN]);
+        switch ($method) {
+            case 'GET':
+                $ret = isset($_SESSION['uid']) ? ['code' => Constant::RET_OK, 'data' => UserLogged::getUser()] : ['code' => Constant::RET_NO_LOGIN];
+                break;
+
+            case 'POST':
+                $username = $request->getPost('username');
+                $password = $request->getPost('password');
+                $user = (new UserModel())->getByName($username);
+                if (!$user) {
+                    $ret = ['code' => Constant::RET_NO_USER];
                 } else {
-                    $user = (new UserModel())->getByName($ret['username']);
-                    if (!$user) {
-                        return Common::jsonReturn(['code' => Constant::RET_NO_PERM]);
+                    if ($password == md5($user['password'])) {
+                        $_SESSION['uid'] = $user['id'];
+                        $ret = ['code' => Constant::RET_OK, 'data' => UserLogged::getUser()];
+                    } else {
+                        $ret = ['code' => Constant::RET_USER_PWD_ERROR];
                     }
-                    $_SESSION['uid'] = $user['id'];
                 }
-            }
+                break;
+
+            default:
+                $ret = ['code' => Constant::RET_METHOD_ERROR];
+                break;
         }
 
-        return Common::jsonReturn(UserLogged::getUser());
+        return Common::jsonReturn($ret);
     }
 }

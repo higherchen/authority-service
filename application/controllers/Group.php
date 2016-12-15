@@ -18,7 +18,7 @@ class GroupController extends Yaf_Controller_Abstract
 
         switch ($method) {
             case 'GET':
-                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByRuleType($request->getParam('rule_id'), Constant::GROUP)];
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByAppIdType($request->getParam('app_id'), Constant::GROUP)];
                 break;
 
             case 'POST':
@@ -27,7 +27,7 @@ class GroupController extends Yaf_Controller_Abstract
                     return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
                 }
 
-                $id = (new AuthItemModel())->add($name, Constant::GROUP, $request->getParam('rule_id'), $request->getPost('description') ?: '');
+                $id = (new AuthItemModel())->add($name, Constant::GROUP, $request->getParam('app_id'), $request->getPost('description') ?: '');
                 $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
                 break;
 
@@ -61,7 +61,7 @@ class GroupController extends Yaf_Controller_Abstract
 
             case 'DELETE':
                 $id = $request->getParam('item_id');
-                $count = (new AuthItemModel())->remove($request->getParam('rule_id'), Constant::CATEGORY, $id);
+                $count = (new AuthItemModel())->remove($request->getParam('app_id'), Constant::GROUP, $id);
                 $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
                 // 后续处理

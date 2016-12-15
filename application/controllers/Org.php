@@ -18,7 +18,7 @@ class OrgController extends Yaf_Controller_Abstract
 
         switch ($method) {
             case 'GET':
-                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByRuleType($request->getParam('rule_id'), Constant::ORG)];
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByAppIdType($request->getParam('app_id'), Constant::ORG)];
                 break;
             
             case 'POST':
@@ -26,7 +26,7 @@ class OrgController extends Yaf_Controller_Abstract
                 if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
                     return Common::jsonReturn(['code' => Constant::RET_INVALID_GROUP_NAME]);
                 }
-                $id = (new AuthItemModel())->add($name, Constant::ORG, $request->getParam('rule_id'), $request->getPost('description') ?: '');
+                $id = (new AuthItemModel())->add($name, Constant::ORG, $request->getParam('app_id'), $request->getPost('description') ?: '');
                 $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
                 break;
 
@@ -60,7 +60,7 @@ class OrgController extends Yaf_Controller_Abstract
 
             case 'DELETE':
                 $id = $request->getParam('item_id');
-                $count = (new AuthItemModel())->remove($request->getParam('rule_id'), Constant::ORG, $id);
+                $count = (new AuthItemModel())->remove($request->getParam('app_id'), Constant::ORG, $id);
                 $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
                 // 后续处理 不删除子权限组/需要单独处理

@@ -18,8 +18,8 @@ class CategoryController extends Yaf_Controller_Abstract
 
         switch ($method) {
             case 'GET':
-                $rule_id = $request->getParam('rule_id');
-                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByRuleType($rule_id, Constant::CATEGORY)];
+                $app_id = $request->getParam('app_id');
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthItemModel())->getByAppIdType($app_id, Constant::CATEGORY)];
                 break;
 
             case 'POST':
@@ -28,8 +28,8 @@ class CategoryController extends Yaf_Controller_Abstract
                     return Common::jsonReturn(['code' => Constant::RET_INVALID_CATE_NAME]);
                 }
 
-                $rule_id = $request->getParam('rule_id');
-                $id = (new AuthItemModel())->add($name, Constant::CATEGORY, $rule_id, $request->getPost('description') ?: '');
+                $app_id = $request->getParam('app_id');
+                $id = (new AuthItemModel())->add($name, Constant::CATEGORY, $app_id, $request->getPost('description') ?: '');
                 $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
                 break;
 
@@ -62,7 +62,7 @@ class CategoryController extends Yaf_Controller_Abstract
 
             case 'DELETE':
                 $item_id = $request->getParam('item_id');
-                $count = (new AuthItemModel())->remove($request->getParam('rule_id'), Constant::CATEGORY, $item_id);
+                $count = (new AuthItemModel())->remove($request->getParam('app_id'), Constant::CATEGORY, $item_id);
                 $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
                 // 后续处理

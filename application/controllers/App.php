@@ -1,18 +1,18 @@
 <?php
 
 /**
- * RuleController 自系统Admin角色可访问
+ * AppController 自系统Admin角色可访问
  * 模块：1-基本信息管理
  * 
  * @access public
  */
 
-class RuleController extends Yaf_Controller_Abstract
+class AppController extends Yaf_Controller_Abstract
 {
     // public function init()
     // {
     //     $user = Factory::getUser($_SESSION['uid']);
-    //     if (!$user->isAdmin(Factory::getRule('authority'))) {
+    //     if (!$user->isAdmin(Factory::getApp('authority'))) {
     //         return Common::jsonReturn(['code' => Constant::RET_NO_LOGIN], true);
     //     }
     // }
@@ -28,7 +28,7 @@ class RuleController extends Yaf_Controller_Abstract
 
         switch ($method) {
             case 'GET':
-                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthRuleModel())->getAll()];
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AppsModel())->getAll()];
                 break;
 
             case 'POST':

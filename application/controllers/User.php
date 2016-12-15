@@ -102,12 +102,12 @@ class UserController extends Yaf_Controller_Abstract
         $request = $this->getRequest();
         $method = $request->getMethod();
 
-        $rule_id = $request->getParam('rule_id');
+        $app_id = $request->getParam('app_id');
         /**
-         * @todo 检测rule_id权限
+         * @todo 检测app_id权限
          */
-        // $accessed_rule_ids = $user->getAccessedRules();
-        // if (!in_array($rule_id, $accessed_rule_ids)) {
+        // $accessed_app_ids = $user->getAccessedApps();
+        // if (!in_array($app_id, $accessed_app_ids)) {
         //     return Common::jsonReturn(['code' => Constant::RET_USER_NO_ACCESS]);
         // }
 
@@ -117,14 +117,14 @@ class UserController extends Yaf_Controller_Abstract
         switch ($method) {
             case 'GET':
                 // 获取可分配的用户组 getAssignableGroup: parameter 2 is true what means to get admin's assignable group
-                $rule = (new RuleModel())->getById($rule_id);
-                $ret = ['code' => Constant::RET_OK, 'data' => $user->getAssignableGroup(Factory::getRule($rule), true)];
+                $app = (new AppModel())->getById($app_id);
+                $ret = ['code' => Constant::RET_OK, 'data' => $user->getAssignableGroup(Factory::getApp($app), true)];
                 break;
 
             case 'POST':
                 // 分配用户组
                 $group_ids = $request->getPost('groups');
-                $user->assignGroups($rule_id, $group_ids, $request->getPost('uid'));
+                $user->assignGroups($app_id, $group_ids, $request->getPost('uid'));
                 $ret = ['code' => Constant::RET_OK];
 
             default:
