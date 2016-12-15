@@ -18,7 +18,7 @@ class AppController extends Yaf_Controller_Abstract
     // }
 
     /**
-     * @todo Method GET 加入访问判断(rule filter)
+     * @todo Method GET 加入访问判断(app access filter)
      * @todo Method POST 加入访问限制
      */
     public function getsAction()
@@ -33,10 +33,14 @@ class AppController extends Yaf_Controller_Abstract
 
             case 'POST':
                 $name = $request->getPost('name');
-                if (!$name || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
-                    return Common::jsonReturn(['code' => Constant::RET_INVALID_RULE_NAME]);
+                if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_NAME]);
                 }
-                $data = Authority_Rule::add($name);
+                $app_key = $request->getPost('app_key');
+                if (!$app_key || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $app_key)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_KEY]);
+                }
+                $data = Authority_App::add($name, $app_key);
                 $ret = $data ? ['code' => Constant::RET_OK, 'data' => $data] : ['code' => Constant::RET_DATA_CONFLICT];
                 break;
 
@@ -49,30 +53,30 @@ class AppController extends Yaf_Controller_Abstract
     }
 
     /**
-     * @todo Method GET/POST 加入访问判断(rule filter)
+     * @todo Method GET/POST 加入访问判断(app access filter)
      */
     public function handleAction()
     {
         $request = $this->getRequest();
         $method = $request->getMethod();
-        $rule_id = $request->getParam('rule_id');
+        $app_id = $request->getParam('app_id');
 
         switch ($method) {
             case 'GET':
-                $ret = ['code' => Constant::RET_OK, 'data' => (new AuthRuleModel())->getById($rule_id)];
+                $ret = ['code' => Constant::RET_OK, 'data' => (new AppModel())->getById($app_id)];
                 break;
 
             case 'POST':
                 $name = $request->getPost('name');
-                if (!$name || preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $name)) {
-                    return Common::jsonReturn(['code' => Constant::RET_RULE_NAME_INVALID]);
+                if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
+                    return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_NAME]);
                 }
-                $count = (new AuthRuleModel())->update($rule_id, $name, $request->getPost('data'));
+                $count = (new AppModel())->update($app_id, $name);
                 $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_UPDATE_FAIL];
                 break;
 
             case 'DELETE':
-                $count = Authority_Rule::remove($rule_id);
+                $count = Authority_App::remove($app_id);
                 $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
                 break;
 
@@ -85,7 +89,7 @@ class AppController extends Yaf_Controller_Abstract
     }
 
     /**
-     * @todo GET/POST 加入访问判断(rule filter)
+     * @todo GET/POST 加入访问判断(app access filter)
      */
     public function usersAction()
     {
@@ -117,7 +121,7 @@ class AppController extends Yaf_Controller_Abstract
     }
 
     /**
-     * @todo GET/POST 加入访问判断(rule filter)
+     * @todo GET/POST 加入访问判断(app access filter)
      */
     public function handleUserAction()
     {
