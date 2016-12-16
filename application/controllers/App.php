@@ -13,7 +13,7 @@ class AppController extends Yaf_Controller_Abstract
     // {
     //     $user = Factory::getUser($_SESSION['uid']);
     //     if (!$user->isAdmin(Factory::getApp('authority'))) {
-    //         return Common::jsonReturn(['code' => Constant::RET_NO_LOGIN], true);
+    //         Common::jsonReturn(['code' => Constant::RET_NO_LOGIN], true);
     //     }
     // }
 
@@ -93,22 +93,22 @@ class AppController extends Yaf_Controller_Abstract
      */
     public function usersAction()
     {
-        // 给auth rule添加数据源角色用户
+        // 给app添加数据源角色用户
         $request = $this->getRequest();
         $method = $request->getMethod();
-        $rule_id = $request->getParam('rule_id');
+        $app_id = $request->getParam('app_id');
 
         switch ($method) {
             case 'GET':
-                // 获取当前rule的用户
-                $role = Authority_Rule::getRoleByRule($rule_id);
-                $user_ids = (new RoleMemberModel())->getUserIdsByRoleId($role['id']);
+                // 获取对当前app有权限的用户
+                $resource_attr = (new ResourceAttrModel())->getById('app', $app_id);
+                $user_ids = (new RoleMemberModel())->getUserIdsByRoleId($resource_attr['role_id']);
                 $ret = ['code' => Constant::RET_OK, 'data' => (new UserModel())->getById($user_ids)];
                 break;
 
             case 'POST':
-                $role = Authority_Rule::getRoleByRule($rule_id);
-                $count = (new RoleMemberModel())->add($role['id'], $request->getPost('user_id'));
+                $resource_attr = (new ResourceAttrModel())->getById('app', $app_id);
+                $count = (new RoleMemberModel())->add($resource_attr['role_id'], $request->getPost('user_id'));
                 $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_CONFLICT];
                 break;
 
@@ -123,7 +123,7 @@ class AppController extends Yaf_Controller_Abstract
     /**
      * @todo GET/POST 加入访问判断(app access filter)
      */
-    public function handleUserAction()
+    public function delUserAction()
     {
         // 删除auth rule数据源角色用户
         $request = $this->getRequest();
@@ -131,8 +131,8 @@ class AppController extends Yaf_Controller_Abstract
             return Common::jsonReturn(['code' => Constant::RET_METHOD_ERROR]);
         }
 
-        $role = Authority_Rule::getRoleByRule($request->getParam('rule_id'));
-        $count = (new RoleMemberModel())->remove($role['id'], $request->getParam('user_id'));
+        $resource_attr = (new ResourceAttrModel())->getById('app', $request->getParam('app_id'));
+        $count = (new RoleMemberModel())->remove($resource_attr['role_id'], $request->getParam('user_id'));
         $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_DATA_NO_FOUND];
 
         return Common::jsonReturn($ret);

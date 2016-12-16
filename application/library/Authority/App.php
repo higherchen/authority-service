@@ -39,7 +39,7 @@ class Authority_App
     }
 
     /**
-     * 新增app - 自动创建资源权限
+     * 新增app
      *
      * @static
      */
@@ -50,7 +50,10 @@ class Authority_App
             return false;
         }
         $data['id'] = $id;
-        (new ResourceAttrModel())->add('app', $id, $_SESSION['uid'], 0);
+        // 自动创建基于app的资源角色组
+        $role_id = (new RoleModel())->add($app_key);
+        // 自动创建资源权限
+        (new ResourceAttrModel())->add('app', $id, $_SESSION['uid'], $role_id);
 
         return $data;
     }
