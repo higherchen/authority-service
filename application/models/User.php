@@ -28,7 +28,7 @@ class UserModel extends BaseModel
         $sql = 'SELECT id,username,nickname,email,telephone FROM user';
         $total_sql = 'SELECT COUNT(1) FROM user';
         if ($name) {
-            $where = " WHERE username LIKE '%{$name}' OR nickname LIKE '%{$name}'";
+            $where = " WHERE username LIKE '{$name}%' OR nickname LIKE '{$name}%'";
             $sql .= $where;
             $total_sql .= $where;
         }
