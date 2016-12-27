@@ -33,7 +33,7 @@ class UserModel extends BaseModel
             $total_sql .= $where;
         }
 
-        $total = $this->_db->query($total_sql)->fetchAll(PDO::FETCH_COLUMN);
+        $total = $this->_db->query($total_sql)->fetch(PDO::FETCH_COLUMN);
 
         if ($page) {
             $pagesize = $pagesize ? : 30;
