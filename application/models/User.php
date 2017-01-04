@@ -36,7 +36,7 @@ class UserModel extends BaseModel
         $total = $this->_db->query($total_sql)->fetch(PDO::FETCH_COLUMN);
 
         if ($page) {
-            $pagesize = $pagesize ? : 30;
+            $pagesize = $pagesize ? : 20;
             $offset = ($page - 1) * $pagesize;
             $sql .= " ORDER BY id DESC LIMIT {$offset},{$pagesize}";
         }
