@@ -1,6 +1,7 @@
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `username` varchar(16) NOT NULL COMMENT '用户名',
+  `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
   `nickname` varchar(16) NOT NULL DEFAULT '' COMMENT '昵称',
   `email` varchar(32) NOT NULL DEFAULT '' COMMENT '邮箱',
   `telephone` varchar(16) NOT NULL DEFAULT '' COMMENT '手机号码',

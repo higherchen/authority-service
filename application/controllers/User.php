@@ -18,11 +18,11 @@ class UserController extends Yaf_Controller_Abstract
 
         case 'POST':
             $username = $request->getPost('username');
-            if (!$username || !preg_match("/^[A-Za-z][A-Za-z0-9]{1,15}$/", $username)) {
+            if (!$username || !preg_match("/^[A-Za-z][\w-]{1,15}$/", $username)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_USERNAME]);
             }
             $nickname = $request->getPost('nickname');
-            if (!$nickname || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $nickname)) {
+            if (!$nickname || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}-]{1,15}$/u", $nickname)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_NICKNAME]);
             }
             $email = $request->getPost('email');
@@ -58,7 +58,7 @@ class UserController extends Yaf_Controller_Abstract
 
         case 'POST':
             $nickname = $request->getPost('nickname');
-            if (!$nickname || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $nickname)) {
+            if (!$nickname || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}-]{1,15}$/u", $nickname)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_NICKNAME]);
             }
             $email = $request->getPost('email');
@@ -71,7 +71,7 @@ class UserController extends Yaf_Controller_Abstract
             }
 
             $id = $request->getParam('id');
-            $count = (new UserModel())->update($id, $nickname, $email, $telephone);
+            $count = (new UserModel())->update($id, '', $nickname, $email, $telephone);
             $ret = $count ? ['code' => Constant::RET_OK] : ['code' => Constant::RET_UPDATE_FAIL];
             break;
 

@@ -33,11 +33,11 @@ class AppController extends Yaf_Controller_Abstract
 
         case 'POST':
             $name = $request->getPost('name');
-            if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
+            if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}-]{1,15}$/u", $name)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_NAME]);
             }
             $app_key = $request->getPost('app_key');
-            if (!$app_key || !preg_match("/^[a-zA-Z][\w\-\_]{1,14}\w$/", $app_key)) {
+            if (!$app_key || !preg_match("/^[a-zA-Z][\w-_]{1,14}\w$/", $app_key)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_KEY]);
             }
             $data = Authority_App::add($name, $app_key);
@@ -68,7 +68,7 @@ class AppController extends Yaf_Controller_Abstract
 
         case 'POST':
             $name = $request->getPost('name');
-            if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}]{1,15}$/u", $name)) {
+            if (!$name || !preg_match("/^[a-zA-Z\x{4e00}-\x{9fa5}][\w\x{4e00}-\x{9fa5}-]{1,15}$/u", $name)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_NAME]);
             }
             $count = (new AppModel())->update($app_id, $name);
