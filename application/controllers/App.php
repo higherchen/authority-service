@@ -28,7 +28,7 @@ class AppController extends Yaf_Controller_Abstract
 
         switch ($method) {
         case 'GET':
-            $ret = ['code' => Constant::RET_OK, 'data' => (new AppsModel())->getAll()];
+            $ret = ['code' => Constant::RET_OK, 'data' => (new AppModel())->getAll()];
             break;
 
         case 'POST':

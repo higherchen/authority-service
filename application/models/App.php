@@ -2,11 +2,17 @@
 
 class AppModel extends BaseModel
 {
+    const GET_ALL_SQL = 'SELECT id,name,app_key,app_secret FROM app';
     const GET_BY_ID_SQL = 'SELECT id,name,app_key,app_secret FROM app WHERE id=?';
     const GET_BY_APP_KEY_SQL = 'SELECT id,name,app_key,app_secret FROM app WHERE app_key=?';
     const INSERT_SQL = 'INSERT INTO app (name,app_key,app_secret) VALUES (?,?,?)';
     const UPDATE_SQL = 'UPDATE app SET name=? WHERE id=?';
     const DELETE_BY_ID_SQL = 'DELETE FROM app WHERE id=?';
+
+    public function getAll()
+    {
+        return $this->_db->query(self::GET_ALL_SQL)->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function getById($ids)
     {
