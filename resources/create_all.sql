@@ -11,32 +11,31 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_user` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '用户表';
 
-CREATE TABLE `auth_rule` (
+CREATE TABLE `app` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `name` varchar(16) NOT NULL COMMENT '规则名',
-  `data` varchar(64) NOT NULL DEFAULT '' COMMENT '内容',
+  `name` varchar(16) NOT NULL COMMENT 'app名称',
+  `app_key` varchar(32) NOT NULL COMMENT 'app key',
+  `app_secret` varchar(16) NOT NULL DEFAULT '' COMMENT 'app secret',
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_auth_rule` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='存储规则的表';
-
-INSERT INTO auth_rule(id,name,data) VALUES (1,'authority', '');
+  UNIQUE KEY `uk_apps_1` (`name`),
+  UNIQUE KEY `uk_apps_2` (`app_key`),
+  UNIQUE KEY `uk_apps_3` (`app_secret`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='应用接入表';
 
 CREATE TABLE `auth_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `name` varchar(16) NOT NULL COMMENT '权限、角色名称',
   `type` tinyint(4) NOT NULL COMMENT '区分权限和角色',
   `description` varchar(32) NOT NULL DEFAULT '' COMMENT '描述',
-  `rule_id` int(11) NOT NULL DEFAULT 0 COMMENT '如果存在规则，关联到规则表',
-  `data` varchar(64) NOT NULL DEFAULT '' COMMENT '内容',
+  `app_id` int(11) NOT NULL COMMENT 'app表关联id',
+  `mark` varchar(32) NOT NULL DEFAULT '' COMMENT '代码标识段',
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_auth_item` (`rule_id`,`name`,`type`)
+  UNIQUE KEY `uk_auth_item` (`app_id`,`name`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='储存权限和角色的表';
-
-INSERT INTO auth_item (id,name,type,description,rule_id) VALUES (1,'Admin',5,'一方通行',1);
 
 CREATE TABLE `auth_item_child` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
@@ -61,8 +60,6 @@ CREATE TABLE `resource_attr` (
   `src_id` int(11) NOT NULL COMMENT '资源ID',
   `owner_id` int(11) NOT NULL DEFAULT 0 COMMENT '所有者ID',
   `role_id` int(11) NOT NULL DEFAULT 0 COMMENT '角色ID',
-  `mode` varchar(3) NOT NULL DEFAULT '' COMMENT '权限按位分布',
-  `data` varchar(64) NOT NULL DEFAULT '' COMMENT '特定规则',
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
@@ -72,12 +69,10 @@ CREATE TABLE `role` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `name` varchar(16) NOT NULL COMMENT '角色名',
   `description` varchar(32) NOT NULL DEFAULT '' COMMENT '描述',
-  `rule_id` int(11) NOT NULL DEFAULT 0 COMMENT '如果存在规则，关联到规则表',
-  `data` varchar(64) NOT NULL DEFAULT '' COMMENT '特定规则',
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_role` (`rule_id`,`name`)
+  UNIQUE KEY `uk_role` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资源角色';
 
 CREATE TABLE `role_member` (
