@@ -9,7 +9,6 @@ class Authority_App
      * 认证服务接入app构造函数
      *
      * @param array|string $app
-     *
      */
     public function __construct($app)
     {
@@ -45,15 +44,17 @@ class Authority_App
      */
     public static function add($name, $app_key)
     {
-        $id = (new AppModel())->add($name, $app_key, substr(md5(time().mt_rand(0, 1000)), 16));
+        $app_secret = substr(md5(time().mt_rand(0, 1000)), 16);
+        $id = (new AppModel())->add($name, $app_key, $app_secret);
         if (!$id) {
             return false;
         }
-        $data['id'] = $id;
+        $data = ['id' => $id, 'app_secret' => $app_secret];
         // 自动创建基于app的资源角色组
         $role_id = (new RoleModel())->add($app_key);
         // 自动创建资源权限
-        (new ResourceAttrModel())->add('app', $id, $_SESSION['uid'], $role_id);
+        (new ResourceAttrModel())->add('app', $id, 0, $role_id);
+        // (new ResourceAttrModel())->add('app', $id, $_SESSION['uid'], $role_id);
 
         return $data;
     }
@@ -72,7 +73,7 @@ class Authority_App
             $auth_item = new AuthItemModel();
             $deleted = $auth_item->getIdsByAppId($id);                          // 即将被删除的auth item
             $auth_item->removeByAppId($id);                                     // 删除auth item
-            (new AuthItemChileModel())->removeMulti($deleted, $deleted, 'OR');  // 删除auth time child
+            (new AuthItemChildModel())->removeMulti($deleted, $deleted, 'OR');  // 删除auth time child
             (new AuthAssignmentModel())->removeByItemIds($deleted);             // 删除auth assignment
             (new ResourceAttrModel())->remove('app', $id);                      // resource_attr role 相关清理
         }

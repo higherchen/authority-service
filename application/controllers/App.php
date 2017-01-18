@@ -37,7 +37,7 @@ class AppController extends Yaf_Controller_Abstract
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_NAME]);
             }
             $app_key = $request->getPost('app_key');
-            if (!$app_key || !preg_match("/^[a-zA-Z][\w-_]{1,14}\w$/", $app_key)) {
+            if (!$app_key || !preg_match("/^\w{8,32}$/", $app_key)) {
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_APP_KEY]);
             }
             $data = Authority_App::add($name, $app_key);
@@ -59,7 +59,7 @@ class AppController extends Yaf_Controller_Abstract
     {
         $request = $this->getRequest();
         $method = $request->getMethod();
-        $app_id = $request->getParam('app_id');
+        $app_id = $request->getParam('id');
 
         switch ($method) {
         case 'GET':

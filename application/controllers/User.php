@@ -34,7 +34,7 @@ class UserController extends Yaf_Controller_Abstract
                 return Common::jsonReturn(['code' => Constant::RET_INVALID_TELEPHONE]);
             }
 
-            $id = (new UserModel())->add($username, $nickname, $email, $telephone);
+            $id = (new UserModel())->add($username, '', $nickname, $email, $telephone);
             $ret = $id ? ['code' => Constant::RET_OK, 'data' => ['id' => $id]] : ['code' => Constant::RET_DATA_CONFLICT];
             break;
 

@@ -2,7 +2,7 @@
 
 class UserModel extends BaseModel
 {
-    const INSERT_SQL = 'INSERT INTO user (username,password,nickname,email,telephone) VALUES (?,?,?,?)';
+    const INSERT_SQL = 'INSERT INTO user (username,password,nickname,email,telephone) VALUES (?,?,?,?,?)';
     const GET_ALL_SQL = 'SELECT id,username,nickname,email,telephone FROM user ORDER BY id DESC';
     const GET_BY_ID_SQL = 'SELECT id,username,nickname,email,telephone FROM user WHERE id=?';
     const GET_BY_NAME_SQL = 'SELECT id,username,password,nickname,email,telephone FROM user WHERE username=?';
